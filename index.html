@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遇见孙健苒</title>
+    <style>
+        body {
+            background: url('https://via.placeholder.com/800x1200') no-repeat center center fixed;
+            background-size: cover;
+            font-family: '微软雅黑';
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .character-img {
+            width: 200px;
+            height: auto;
+            margin: 10px auto;
+            display: block;
+            border-radius: 10px;
+        }
+        .dialogue {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .choices {
+            display: grid;
+            gap: 10px;
+        }
+        .choice-btn {
+            padding: 12px;
+            background: #f8b3d0;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .choice-btn:hover {
+            background: #ff8ab7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="gameContainer">
+        < img src="https://via.placeholder.com/200x300" class="character-img" alt="孙健苒">
+        <div id="storyContent"></div>
+    </div>
+
+<script>
+// 游戏核心数据
+const storyData = {
+    currentScene: 'start',
+    scenes: {
+        'start': {
+            text: "咖啡厅里飘着拿铁的香气，你抬头看见身着米色针织衫的孙健苒正犹豫地看着菜单...",
+            choices: [
+                { text: "主动推荐招牌咖啡", next: 'recommend' },
+                { text: "静静等待她决定", next: 'wait' }
+            ]
+        },
+        'recommend': {
+            text: "她露出惊喜的笑容：「你也喜欢海盐焦糖拿铁吗？」",
+            choices: [
+                { text: "分享自己的喜好", next: 'share' },
+                { text: "转移话题聊天气", next: 'weather' }
+            ]
+        },
+        'share': {
+            text: "你们聊得很投机，孙健苒笑着说：「下次一起喝咖啡吧！」",
+            choices: [
+                { text: "约定下次见面", next: 'good' },
+                { text: "礼貌告别", next: 'normal' }
+            ]
+        },
+        'weather': {
+            text: "你们聊了聊天气，气氛有些尴尬...",
+            choices: [
+                { text: "重新开始", next: 'start' }
+            ]
+        }
+    },
+    endings: {
+        'good': "落日的余晖中，孙健苒轻轻握住你的手：「原来对的人一直都在身边」",
+        'normal': "你们保持着友好的关系，但总觉得缺少了些什么..."
+    }
+};
+
+// 游戏引擎
+function renderScene() {
+    const scene = storyData.scenes[storyData.currentScene];
+    let html = `<div class="dialogue">${scene.text}</div>`;
+    html += '<div class="choices">';
+    scene.choices.forEach(choice => {
+        html += `<button class="choice-btn" onclick="nextScene('${choice.next}')">${choice.text}</button>`;
+    });
+    document.getElementById('storyContent').innerHTML = html;
+}
+
+function nextScene(sceneKey) {
+    if(storyData.endings[sceneKey]) {
+        showEnding(sceneKey);
+    } else {
+        storyData.currentScene = sceneKey;
+        renderScene();
+    }
+}
+
+function showEnding(type) {
+    const endingHTML = `
+        <div class="dialogue" style="background:#f0f9ff;">
+            <h3>${storyData.endings[type]}</h3>
+            <button class="choice-btn" onclick="location.reload()">重新开始</button>
+        </div>`;
+    document.getElementById('storyContent').innerHTML = endingHTML;
+}
+
+// 初始化游戏
+renderScene();
+</script>
+</body>
+</html>
